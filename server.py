@@ -14,7 +14,7 @@ def hour(hour, minute):
     t = datetime.datetime(2013, 1, 1, hour, minute, 0, 0)
     r = rrule.rrule(rrule.DAILY, t)
     dt = r.after(datetime.datetime.now()) - datetime.datetime.now()
-    return jsonify({'item':[{'value':dt.seconds//3600, 'description':'hours'},{'value':(dt.seconds//60)%60, 'description':'minutes'}]})
+    return jsonify({'item':[{'value':dt.seconds//3600, 'text':'hours'},{'value':(dt.seconds//60)%60, 'text':'minutes'}]})
 
 
 if __name__ == '__main__':
