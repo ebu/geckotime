@@ -15,26 +15,40 @@ class GithubStatus():
 
     def __init__(self):
         logging.info("fetching the base url for github status")
-        _, _, self.last_message_url = requests.get(GithubStatus.BASE_URL).json().values()
+        _, self.messages_url, self.last_message_url = requests.get(GithubStatus.BASE_URL).json().values()
 
 
     @property
-    def json(self):
+    def status(self):
         last_message = requests.get(self.last_message_url).json()
-        print last_message
         if last_message['status'] == 'good':
             status = 'Up'
         else:
             status = 'Down'
 
-        message = last_message['body']
-        return {'status':status, 'responseTime':message}
+        return {'status':status}
+
+    @property
+    def message(self):
+        messages = requests.get(self.messages_url).json()
+        out = []
+        for m in messages:
+            summary = {}
+            if m['status'] == 'good':
+               summary['type'] = 0
+            elif m['status'] == 'minor':
+               summary['type'] = 1
+            else:
+               summary['type'] = 2
+            summary['text'] = m['body']
+            out.append(summary)
+        return {'item':out}
 
 status = GithubStatus()
 
 @app.route('/')
 def home():
-    return "/hour/minute return a dict for geckoboard"
+    return "/hour/minute return a dict for geckoboard\n/github for more on github"
 
 @app.route('/<int:hour>/<int:minute>')
 def hour(hour, minute):
@@ -43,9 +57,17 @@ def hour(hour, minute):
     dt = r.after(datetime.datetime.now()) - datetime.datetime.now()
     return jsonify({'item':[{'value':dt.seconds//3600, 'text':'hours'},{'value':(dt.seconds//60)%60, 'text':'minutes'}]})
 
-@app.route('/github')
+@app.route('/github/')
 def github():
-    return jsonify(status.json)
+    return "/github/status for status (up or down)\n/github/messages for detailed message"
+
+@app.route('/github/status')
+def github_status():
+    return jsonify(status.status)
+
+@app.route('/github/messages')
+def github_msg():
+    return jsonify(status.message)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
