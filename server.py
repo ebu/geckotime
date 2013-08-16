@@ -16,7 +16,9 @@ class GithubStatus():
 
     def __init__(self):
         logging.info("fetching the base url for github status")
-        _, self.messages_url, self.last_message_url = requests.get(GithubStatus.BASE_URL).json().values()
+        urls = requests.get(GithubStatus.BASE_URL).json()
+        self.status_url = urls['status_url']
+        self.messages_url = urls['messages_url']
 
 
     @property
@@ -34,7 +36,6 @@ class GithubStatus():
         messages = requests.get(self.messages_url).json()
         out = []
         for m in messages:
-            logging.info(m)
             summary = {}
             if m['status'] == 'good':
                summary['type'] = 0
@@ -45,7 +46,6 @@ class GithubStatus():
             t = m['created_on']
             summary['text'] = m['body'] + "\n" + t.replace('T', ' ').replace('Z', '')
             out.append(summary)
-        logging.log(out)
         return {'item':out}
 
 status = GithubStatus()
