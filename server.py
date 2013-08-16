@@ -3,7 +3,7 @@ from flask import Flask, jsonify
 from dateutil import rrule
 import datetime
 import requests
-from collections import defaultdict
+import arrow
 import logging
 
 app = Flask(__name__)
@@ -40,7 +40,8 @@ class GithubStatus():
                summary['type'] = 1
             else:
                summary['type'] = 2
-            summary['text'] = m['body']
+            t = m['created_on']
+            summary['text'] = m['body'] + "\n" + t.replace('T', ' ').replace('Z', '')
             out.append(summary)
         return {'item':out}
 
