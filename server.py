@@ -13,7 +13,7 @@ class GithubStatus():
     BASE_URL = "https://status.github.com/api.json"
     STATUS_TRANSLATE = defaultdict(good='Up')
     def __init__(self):
-        logging.msg("fetching the base url for github status")
+        logging.info("fetching the base url for github status")
         _, _, self.last_message_url = requests.get(GithubStatus.BASE_URL).json()
 
 
