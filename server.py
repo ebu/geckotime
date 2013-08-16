@@ -1,10 +1,11 @@
 import os
+import datetime
+import logging
+
+from dateutil import rrule
+import requests
 import lxml.html
 from flask import Flask, jsonify, redirect
-from dateutil import rrule
-import datetime
-import requests
-import logging
 
 app = Flask(__name__)
 API_JSON = ""
