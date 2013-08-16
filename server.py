@@ -34,6 +34,7 @@ class GithubStatus():
         messages = requests.get(self.messages_url).json()
         out = []
         for m in messages:
+            logging.info(m)
             summary = {}
             if m['status'] == 'good':
                summary['type'] = 0
@@ -44,6 +45,7 @@ class GithubStatus():
             t = m['created_on']
             summary['text'] = m['body'] + "\n" + t.replace('T', ' ').replace('Z', '')
             out.append(summary)
+        logging.log(out)
         return {'item':out}
 
 status = GithubStatus()
