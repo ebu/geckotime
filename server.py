@@ -1,9 +1,9 @@
 import os
-from flask import Flask, jsonify
+import lxml.html
+from flask import Flask, jsonify, redirect
 from dateutil import rrule
 import datetime
 import requests
-import arrow
 import logging
 
 app = Flask(__name__)
@@ -69,6 +69,12 @@ def github_status():
 @app.route('/github/messages')
 def github_msg():
     return jsonify(status.message)
+
+@app.route('/xkcd')
+def xkcd():
+    xkcd_page = requests.get('http://xkcd.com').content
+    html = lxml.html.fromstring(xkcd_page)
+    return redirect(html.xpath('//div[@id="comic"]/img/@src')[0])
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
