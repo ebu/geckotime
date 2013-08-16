@@ -21,6 +21,7 @@ class GithubStatus():
     @property
     def json(self):
         last_message = requests.get(self.last_message_url).json()
+        print last_message
         if last_message['status'] == 'good':
             status = 'Up'
         else:
@@ -35,7 +36,7 @@ status = GithubStatus()
 def home():
     return "/hour/minute return a dict for geckoboard"
 
-@app.route('/to/<int:hour>/<int:minute>')
+@app.route('/<int:hour>/<int:minute>')
 def hour(hour, minute):
     t = datetime.datetime(2013, 1, 1, hour, minute, 0, 0)
     r = rrule.rrule(rrule.DAILY, t)
