@@ -23,7 +23,7 @@ class GithubStatus():
 
     @property
     def status(self):
-        last_message = requests.get(self.last_message_url).json()
+        last_message = requests.get(self.status_url).json()
         if last_message['status'] == 'good':
             status = 'Up'
         else:
